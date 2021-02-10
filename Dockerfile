@@ -58,3 +58,12 @@ RUN pip3 install Werkzeug==0.16.1
 RUN sed -i 's/OverrideMeOrThereWillBeABuildError/http:\/\/localhost:4000\/api\/v1\/interactive\//' /testplan/testplan/web_ui/testing/.env 
 RUN cd /testplan && python3 /testplan/install-testplan-ui --verbose
 RUN cp -Rf /testplan/testplan/web_ui/testing/* /root/.local/lib/python3.7/site-packages/testplan/web_ui/testing
+
+#install boost library
+RUN apt-get install -y apt-utils
+RUN cd /work && wget https://dl.bintray.com/boostorg/release/1.75.0/source/boost_1_75_0.tar.gz
+RUN cd /work && tar xzf boost_1_75_0.tar.gz -C /work
+ENV CPLUS_INCLUDE_PATH="$CPLUS_INCLUDE_PATH:/usr/include/python3.7/:/usr/local/include"
+ENV LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib"
+RUN cd /work/boost_1_75_0 && ./bootstrap.sh
+RUN cd /work/boost_1_75_0 && ./b2 install
